@@ -1,5 +1,3 @@
-package sample;
-
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -27,6 +25,9 @@ public class Controller implements Initializable {
         this.errorLabelsForFields.put(this.percent, this.percentError);
         this.errorLabelsForFields.put(this.start, this.startError);
         this.errorLabelsForFields.put(this.months, this.monthsError);
+        this.errorLabelsForFields.values().forEach(asd -> {
+            System.out.println();
+        });
     }
 
     public void handleEnterEvent() {
@@ -49,11 +50,11 @@ public class Controller implements Initializable {
     }
 
     private boolean allIsNotEmpty() {
-        return !isNotEmpty(this.percent) && !isNotEmpty(this.start) && !isNotEmpty(this.months);
+        return isNotEmpty(this.percent) && isNotEmpty(this.start) && isNotEmpty(this.months);
     }
 
     private boolean isNotEmpty(TextField textField) {
-        return textField.getText().equals("");
+        return !textField.getText().equals("");
     }
 
     private double getNumberValue(TextField textField) {
