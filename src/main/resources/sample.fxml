@@ -1,45 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import gribiwe.NumberField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane maxHeight="317.0" maxWidth="281.0" minHeight="281.0" minWidth="251.0" prefHeight="281.0" prefWidth="281.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
-   <children>
-        <Separator layoutX="11.0" layoutY="207.0" prefHeight="14.0" prefWidth="230.0" />
-        <Label layoutX="15.0" layoutY="14.0" prefHeight="36.0" prefWidth="129.0" text="Відсоток">
-            <font>
-                <Font size="23.0" />
-            </font>
-        </Label>
-        <Label layoutX="16.0" layoutY="75.0" prefHeight="36.0" prefWidth="200.0" text="Сума вкладу">
-            <font>
-                <Font size="23.0" />
-            </font>
-        </Label>
-        <Label layoutX="16.0" layoutY="136.0" prefHeight="36.0" prefWidth="200.0" text="Минуло місяців">
-            <font>
-                <Font size="23.0" />
-            </font>
-        </Label>
-        <Label layoutX="16.0" layoutY="214.0" prefHeight="36.0" prefWidth="200.0" text="Результат">
-            <font>
-                <Font size="23.0" />
-            </font>
-        </Label>
-        <Label fx:id="result" layoutX="16.0" layoutY="239.0" prefHeight="36.0" prefWidth="200.0">
-            <font>
-                <Font size="20.0" />
-            </font>
-        </Label>
-      <TextField fx:id="percent" layoutX="15.0" layoutY="50.0" onKeyReleased="#handleEnterEvent" />
-      <TextField fx:id="start" layoutX="15.0" layoutY="111.0" onKeyReleased="#handleEnterEvent" />
-      <TextField fx:id="months" layoutX="15.0" layoutY="172.0" onKeyReleased="#handleEnterEvent" />
-      <Label fx:id="percentError" layoutX="173.0" layoutY="54.0" text="use only numbers!" textFill="#ff2e2e" visible="false" />
-      <Label fx:id="startError" layoutX="173.0" layoutY="115.0" text="use only numbers!" textFill="#ff2e2e" visible="false" />
-      <Label fx:id="monthsError" layoutX="173.0" layoutY="176.0" text="use only numbers!" textFill="#ff2e2e" visible="false" />
-   </children>
+<AnchorPane maxHeight="509.0" maxWidth="901.0" minHeight="509.0" minWidth="901.0" prefHeight="509.0" prefWidth="901.0"
+            xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gribiwe.Controller">
+    <Label layoutX="15.0" layoutY="14.0" text="1. Выбор программы">
+        <font>
+          <Font size="22.0"/>
+        </font>
+    </Label>
+    <RadioButton onAction="#selectProgram" fx:id="firstProg" layoutX="15.0" layoutY="54.0" mnemonicParsing="false" prefHeight="81.0"
+                 prefWidth="269.0" selected="true"
+                 text="1. 18%. Можно снимать начисленные проценты. Если не были сняты - зачисляются на основной счет и процент начисляется на всю сумму"
+                 textAlignment="JUSTIFY" wrapText="true">
+    </RadioButton>
+    <RadioButton onAction="#selectProgram" fx:id="secondProg" layoutX="300.0" layoutY="54.0" mnemonicParsing="false" prefHeight="81.0"
+                 prefWidth="269.0"
+                 text="2. 15%. С возможностью ежемесячного пополнения. При пополнении счета в конце следующего месяца, процент увеличивается на 0,5% и начисялется на всю сумму"
+                 textAlignment="JUSTIFY" toggleGroup="$program" wrapText="true"/>
+    <RadioButton onAction="#selectProgram" fx:id="thirdProg" layoutX="590.0" layoutY="54.0" mnemonicParsing="false" prefHeight="81.0"
+                 prefWidth="269.0"
+                 text="3. 15%. С возможностью ежемесячного пополнения или съема со счета. Ограничение на суммы снятия или пополнения отсутсвует"
+                 textAlignment="JUSTIFY" toggleGroup="$program" wrapText="true"/>
+    <Separator layoutX="15.0" layoutY="145.0" prefHeight="9.0" prefWidth="853.0"/>
+    <Label layoutX="15.0" layoutY="160.0" text="2. Сумма и срок">
+        <font>
+          <Font size="22.0"/>
+        </font>
+    </Label>
+    <Label layoutX="14.0" layoutY="199.0" text="Стартовая сумма">
+        <font>
+          <Font size="13.0"/>
+        </font>
+    </Label>
+    <Label layoutX="14.0" layoutY="263.0" text="Количество месяцев">
+        <font>
+          <Font size="13.0"/>
+        </font>
+    </Label>
+    <NumberField fx:id="mounthCount" onKeyReleased="#updateMounthCount" layoutX="14.0" layoutY="292.0" prefHeight="25.0" prefWidth="161.0"/>
+    <Separator layoutX="198.0" layoutY="157.0" orientation="VERTICAL" prefHeight="290.0" prefWidth="10.0"/>
+    <NumberField fx:id="startSumm" layoutX="14.0" layoutY="226.0" prefHeight="19.0" prefWidth="161.0"/>
+    <Label layoutX="220.0" fx:id="changeLabel" layoutY="160.0" text="3. Изменения счета">
+        <font>
+          <Font size="22.0"/>
+        </font>
+    </Label>
+    <Separator layoutX="524.0" layoutY="157.0" orientation="VERTICAL" prefHeight="290.0" prefWidth="10.0"/>
+    <Label layoutX="549.0" layoutY="160.0" text="4. Результат">
+        <font>
+          <Font size="22.0"/>
+        </font>
+    </Label>
+    <TableView fx:id="changeTable" layoutX="220.0" layoutY="274.0" prefHeight="156.0" prefWidth="288.0">
+      <columns>
+          <TableColumn prefWidth="138.0" text="Месяц"/>
+          <TableColumn fx:id="changeColumn" prefWidth="149.0" text="Изменение счета"/>
+      </columns>
+    </TableView>
+    <Label layoutX="219.0" layoutY="199.0" text="Месяц">
+        <font>
+          <Font size="13.0"/>
+        </font>
+    </Label>
+    <NumberField fx:id="changeMounth" layoutX="219.0" layoutY="226.0" prefHeight="25.0" prefWidth="81.0"/>
+    <Label layoutX="318.0" fx:id="changeSumLabel" layoutY="199.0" text="Сумма">
+        <font>
+          <Font size="13.0"/>
+        </font>
+    </Label>
+    <NumberField fx:id="changeSum" layoutX="318.0" layoutY="226.0" prefHeight="25.0" prefWidth="81.0"/>
+    <Button layoutX="419.0" layoutY="226.0" mnemonicParsing="false" onAction="#addChange" prefHeight="25.0"
+            prefWidth="89.0" text="Добавить"/>
+    <TableView fx:id="resultTable" layoutX="549.0" layoutY="245.0" prefHeight="187.0" prefWidth="315.0">
+      <columns>
+          <TableColumn prefWidth="159.0" text="Месяц"/>
+          <TableColumn prefWidth="155.0" text="Счет"/>
+      </columns>
+    </TableView>
+    <Button layoutX="549.0" layoutY="196.0" mnemonicParsing="false" onAction="#calculateResult" prefHeight="32.0"
+            prefWidth="315.0" text="Получить результат"/>
 </AnchorPane>

@@ -1,3 +1,5 @@
+package gribiwe;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,8 +13,10 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("sample.fxml")));
-        primaryStage.setTitle("Микита Гриб");
-        primaryStage.setScene(new Scene(root, 300, 300));
+        primaryStage.setTitle("Никита Гриб");
+        Scene scene = new Scene(root, 901.0, 509.0);
+        primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 
