@@ -2,7 +2,6 @@ package gribiwe;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -66,6 +65,7 @@ public class Controller implements Initializable {
         addChangeButton.setDisable(true);
 
         initTables();
+        selectProgram();
     }
 
     private void initTables() {
@@ -112,19 +112,11 @@ public class Controller implements Initializable {
         resultCash = new TableColumn<ResultRecord, Double>("Счет");
     }
 
-    private boolean isNotEmpty(TextField textField) {
-        return !textField.getText().equals("");
-    }
-
-    private double getNumberValue(TextField textField) {
-        return Double.parseDouble(textField.getText());
-    }
-
     public void addChange() {
         long mounthNumber = changeMounth.getNumber();
         String cashValue;
 
-        if (getProgram().getId() == 2) {
+        if (getProgram().getId() == 1) {
             cashValue = "снятие процентов";
         } else {
             cashValue = valueOf(changeSum.getNumber());
@@ -144,7 +136,6 @@ public class Controller implements Initializable {
 
         List<ResultRecord> resultRecords = new ArrayList<>();
 
-        //todo: calculate with changes
         for (long i = 0; i <= monthCountValue; i++) {
             String formattedCash = String.format("%.3f", cashValue);
             double cash = Double.parseDouble(formattedCash.replace(",", "."));
@@ -152,11 +143,41 @@ public class Controller implements Initializable {
 
             resultRecords.add(resultRecord);
 
-            cashValue = cashValue + cashValue * monthPercent / 100D;
+            double additionalPercents = cashValue * monthPercent / 100D;
+            cashValue = cashValue + additionalPercents;
+
+            if (selectedDepositProgram.getId() != 1) {
+                double increased = getIncreased(i);
+                cashValue += increased;
+                if (increased != 0) {
+                    System.out.println((i+1)+" : "+monthPercent);
+                    monthPercent += 0.5D;
+                }
+            } else if (wasWithdrawn(i)){
+                cashValue -= additionalPercents;
+            }
         }
 
         ObservableList<ResultRecord> resultRecordObservableList = FXCollections.observableArrayList(resultRecords);
         resultTable.setItems(resultRecordObservableList);
+    }
+
+    private boolean wasWithdrawn(long i) {
+        for (ChangeRecord changeRecord : changeRecords) {
+            if (changeRecord.getMonth() == i+1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private double getIncreased(long i) {
+        for (ChangeRecord changeRecord : changeRecords) {
+            if (changeRecord.getMonth() == i+1) {
+                return Double.parseDouble(changeRecord.getCash());
+            }
+        }
+        return 0;
     }
 
     public DepositProgram getProgram() {
@@ -183,17 +204,21 @@ public class Controller implements Initializable {
             changeSum.setCanBeNegative(false);
         }
 
-        if(selectedDepositProgram.getId() == 2) {
-            changeColumn.setText("Событие");
-            changeLabel.setText("Снятие процента");
-            changeSumLabel.setVisible(false);
-            changeSum.setVisible(false);
+        if(selectedDepositProgram.getId() == 1) {
+            activateFirstProgramUI();
         } else {
             changeColumn.setText("Изменение счета");
             changeLabel.setText("Изменение счета");
             changeSumLabel.setVisible(true);
             changeSum.setVisible(true);
         }
+    }
+
+    private void activateFirstProgramUI() {
+        changeColumn.setText("Событие");
+        changeLabel.setText("Снятие процента");
+        changeSumLabel.setVisible(false);
+        changeSum.setVisible(false);
     }
 
     public void updateMounthCount(KeyEvent keyEvent) {
